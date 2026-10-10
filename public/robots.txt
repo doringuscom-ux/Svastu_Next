@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://s-vastuandnumerology.netlify.app/sitemap.xml
+Sitemap: https://svastusolution.com/sitemap.xml
