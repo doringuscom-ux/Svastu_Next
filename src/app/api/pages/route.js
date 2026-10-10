@@ -99,6 +99,13 @@ export async function POST(request) {
     });
 
     const saved = await newPage.save();
+    
+    // Auto-update sitemap dynamically
+    try {
+      const { syncSitemapFile } = await import('@/lib/sitemapSync');
+      syncSitemapFile().catch(console.error);
+    } catch (e) {}
+
     return NextResponse.json(saved, { status: 201 });
   } catch (error) {
     console.error('API /pages POST error:', error);
