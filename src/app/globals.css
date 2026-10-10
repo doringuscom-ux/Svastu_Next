@@ -1,0 +1,208 @@
+@import "tailwindcss";
+
+@layer utilities {
+  @keyframes shimmer {
+    0% { background-position: 200% center; }
+    100% { background-position: -200% center; }
+  }
+  .animate-shimmer {
+    animation: shimmer 3s linear infinite;
+  }
+}
+
+html,
+body {
+  scroll-behavior: smooth;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Rich Text Formatting for Blog and City Pages */
+.vastu-article h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0.75rem;
+  color: #111827;
+}
+
+.vastu-article h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: #1f2937;
+}
+
+.vastu-article h3 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: #374151;
+}
+
+.vastu-article p {
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+  color: #4b5563;
+}
+
+.vastu-article p:empty {
+  display: none;
+}
+
+.vastu-article ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: #4b5563;
+}
+
+.vastu-article ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: #4b5563;
+}
+
+.vastu-article li {
+  margin-bottom: 0.25rem;
+}
+
+.vastu-article a {
+  color: #d4af37;
+  text-decoration: underline;
+}
+
+.vastu-article a:hover {
+  color: #b8860b;
+}
+
+.vastu-article strong,
+.vastu-article b {
+  font-weight: 700;
+  color: #111827;
+}
+
+.vastu-article em,
+.vastu-article i {
+  font-style: italic;
+}
+
+.vastu-article blockquote {
+  border-left: 4px solid #d4af37;
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: #6b7280;
+}
+
+/* Normalization for User Injected Content (City Pages & Blog Articles) */
+/* Forces all pasted HTML (Elementor, Word, Google Docs) to follow uniform font size and colors */
+.city-user-content,
+.city-user-content *,
+.vastu-article,
+.vastu-article * {
+  font-family: inherit;
+}
+
+.city-user-content,
+.vastu-article {
+  font-size: 1rem !important; /* 16px uniform */
+  line-height: 1.75 !important;
+  color: #4b5563 !important; /* text-gray-600 */
+}
+
+.city-user-content p,
+.city-user-content div,
+.city-user-content span,
+.city-user-content li,
+.vastu-article p,
+.vastu-article div,
+.vastu-article span,
+.vastu-article li {
+  font-size: 1rem !important; /* 16px */
+  line-height: 1.75 !important;
+  color: #4b5563 !important;
+  background-color: transparent !important;
+  max-width: 100% !important;
+  width: auto !important;
+  height: auto !important; /* Overrides fixed heights from pasted code */
+}
+
+.city-user-content p,
+.vastu-article p {
+  margin-top: 0 !important;
+  margin-bottom: 0.75rem !important;
+}
+
+.city-user-content p:last-child,
+.vastu-article p:last-child {
+  margin-bottom: 0 !important;
+}
+
+.city-user-content h1,
+.city-user-content h2,
+.city-user-content h3,
+.city-user-content h4,
+.vastu-article h1,
+.vastu-article h2,
+.vastu-article h3,
+.vastu-article h4 {
+  font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif !important;
+  font-weight: 700 !important;
+  color: #111827 !important; /* text-gray-900 */
+}
+
+.city-user-content h1 {
+  font-size: 1.75rem !important;
+  margin-top: 1.5rem !important;
+  margin-bottom: 0.75rem !important;
+}
+
+.city-user-content h2 {
+  font-size: 1.5rem !important;
+  margin-top: 1.25rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.city-user-content h3 {
+  font-size: 1.25rem !important;
+  margin-top: 1rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.city-user-content ul {
+  list-style-type: disc !important;
+  padding-left: 1.5rem !important;
+  margin-top: 0.5rem !important;
+  margin-bottom: 1.25rem !important;
+}
+
+.city-user-content ol {
+  list-style-type: decimal !important;
+  padding-left: 1.5rem !important;
+  margin-top: 0.5rem !important;
+  margin-bottom: 1.25rem !important;
+}
+
+.city-user-content li {
+  margin-bottom: 0.5rem !important;
+}
+
+.city-user-content strong,
+.city-user-content b {
+  font-weight: 600 !important;
+  color: #111827 !important;
+}
+
+.city-user-content a {
+  color: #ea580c !important;
+  text-decoration: underline !important;
+}
