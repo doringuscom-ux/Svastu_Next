@@ -36,8 +36,11 @@ export async function POST(request) {
           </table>
         `;
 
+        // Support multiple comma-separated emails
+        const recipients = adminEmail.split(',').map(e => e.trim()).filter(Boolean).join(',');
+
         const formData = new URLSearchParams();
-        formData.append('to', adminEmail);
+        formData.append('to', recipients);
         formData.append('subject', 'New Contact Form Submission - S Vastu');
         formData.append('message', htmlMessage);
 
