@@ -43,7 +43,7 @@ export default function Navbar() {
       </div> */}
 
       {/* Main Navbar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20 sm:h-24">
           {/* Logo */}
           <Link to="/" className="flex-shrink-0 flex items-center cursor-pointer group">
