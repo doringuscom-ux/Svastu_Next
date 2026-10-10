@@ -9,7 +9,7 @@ export default async function sitemap() {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://svastusolution.com';
 
   const staticRoutes = [
-    '',
+    '/',
     '/about-us',
     '/services',
     '/gallery',
@@ -40,10 +40,10 @@ export default async function sitemap() {
   }
 
   const staticEntries = staticRoutes.map((route) => ({
-    url: `${baseUrl}${route}`,
+    url: route === '/' ? baseUrl : `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: 'daily',
-    priority: route === '' ? 1.0 : 0.8,
+    priority: route === '/' ? 1.0 : 0.8,
   }));
 
   const blogEntries = blogs.map((blog) => ({
