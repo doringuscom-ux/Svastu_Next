@@ -1,7 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from '@/components/RouterShim';
-import { Helmet } from 'react-helmet-async';
 import axios from 'axios';
 import { PAGES_API } from '../utils/api';
 import Services from '../components/Services';
@@ -114,13 +113,6 @@ export default function CityPage({ initialPageData = null }) {
 
   return (
     <div className="city-landing-page">
-      <Helmet>
-        <title>{metaTitle}</title>
-        <meta name="description" content={metaDescription} />
-        {metaKeywords && <meta name="keywords" content={metaKeywords} />}
-        <link rel="canonical" href={metaCanonical} />
-        <meta name="robots" content={metaRobots} />
-      </Helmet>
 
       <CityHero city={actualCityName} customText={pageData?.customText} country={pageData?.country} />
       <CitySections pageData={pageData} />
