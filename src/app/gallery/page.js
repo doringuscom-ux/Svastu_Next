@@ -1,7 +1,11 @@
 import dbConnect from '@/lib/db';
+import { canonicalUrl } from '@/lib/seo';
 import Seo from '@/models/Seo';
 import PublicLayout from '@/components/PublicLayout';
 import GalleryPage from '@/legacy-pages/GalleryPage';
+
+// Re-read the DB hourly so new cities/blogs and admin SEO edits go live without a rebuild.
+export const revalidate = 3600;
 
 export async function generateMetadata() {
   try {
@@ -11,7 +15,7 @@ export async function generateMetadata() {
       return {
         title: seo.title || 'Gallery - S Vastu Solution',
         description: seo.description || 'Explore our gallery of vastu consultations and remedies.',
-        alternates: { canonical: seo.canonical || 'https://svastusolution.com/gallery' },
+        alternates: { canonical: canonicalUrl(seo.canonical, '/gallery') },
         robots: seo.robots || 'index, follow',
       };
     }
@@ -19,6 +23,7 @@ export async function generateMetadata() {
   return {
     title: 'Gallery - S Vastu Solution',
     description: 'Explore our gallery of vastu consultations and remedies.',
+    alternates: { canonical: 'https://svastusolution.com/gallery' },
   };
 }
 

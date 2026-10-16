@@ -3,7 +3,6 @@ import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Settings } from 'lucide-react';
 import Services from '../components/Services';
-import SeoMeta from '../components/SeoMeta';
 
 export default function ServicesPage() {
   useEffect(() => {
@@ -12,7 +11,6 @@ export default function ServicesPage() {
 
   return (
     <div className="pt-20 lg:pt-24 min-h-screen bg-slate-50">
-      <SeoMeta pageName="services" />
       {/* Hero Section */}
       <section className="relative bg-[#0B152A] pt-16 pb-10 sm:pt-20 sm:pb-12 overflow-hidden">
         {/* Animated glowing blobs */}

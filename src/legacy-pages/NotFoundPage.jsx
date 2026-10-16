@@ -3,7 +3,6 @@ import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from '@/components/RouterShim';
 import { Home, Compass } from 'lucide-react';
-import SeoMeta from '../components/SeoMeta';
 
 export default function NotFoundPage() {
   useEffect(() => {
@@ -12,7 +11,6 @@ export default function NotFoundPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center items-center px-4 py-20 lg:py-24">
-      <SeoMeta pageName="404" />
       
       <div className="max-w-2xl w-full text-center">
         <motion.div

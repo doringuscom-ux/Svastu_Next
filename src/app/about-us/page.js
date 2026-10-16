@@ -1,7 +1,11 @@
 import dbConnect from '@/lib/db';
+import { canonicalUrl } from '@/lib/seo';
 import Seo from '@/models/Seo';
 import PublicLayout from '@/components/PublicLayout';
 import AboutPage from '@/legacy-pages/AboutPage';
+
+// Re-read the DB hourly so new cities/blogs and admin SEO edits go live without a rebuild.
+export const revalidate = 3600;
 
 export async function generateMetadata() {
   try {
@@ -11,7 +15,7 @@ export async function generateMetadata() {
       return {
         title: seo.title || 'About Us - S Vastu Solution',
         description: seo.description || 'Learn about S Vastu Solution, our mission, vision and founders.',
-        alternates: { canonical: seo.canonical || 'https://svastusolution.com/about-us' },
+        alternates: { canonical: canonicalUrl(seo.canonical, '/about-us') },
         robots: seo.robots || 'index, follow',
       };
     }
@@ -19,6 +23,7 @@ export async function generateMetadata() {
   return {
     title: 'About Us - S Vastu Solution',
     description: 'Learn about S Vastu Solution, our mission, vision and founders.',
+    alternates: { canonical: 'https://svastusolution.com/about-us' },
   };
 }
 

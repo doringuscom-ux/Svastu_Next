@@ -11,12 +11,13 @@ const cleanExcerpt = (post) => {
   return stripped.length > 150 ? stripped.substring(0, 150) + '...' : stripped;
 };
 
-export default function Blog({ hideHeader = false, limit, showFilters = false }) {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
+export default function Blog({ hideHeader = false, limit, showFilters = false, initialPosts = null }) {
+  const [posts, setPosts] = useState(initialPosts || []);
+  const [loading, setLoading] = useState(!initialPosts);
   const [activeCategory, setActiveCategory] = useState('All');
 
   useEffect(() => {
+    if (initialPosts) return;
     const fetchBlogs = async () => {
       try {
         const { data } = await axios.get(BLOGS_API);
@@ -28,7 +29,7 @@ export default function Blog({ hideHeader = false, limit, showFilters = false })
       }
     };
     fetchBlogs();
-  }, []);
+  }, [initialPosts]);
 
   const categories = ['All', ...new Set(posts.map(post => post.category || 'General'))];
 

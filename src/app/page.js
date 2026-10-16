@@ -1,4 +1,5 @@
 import dbConnect from '@/lib/db';
+import { canonicalUrl } from '@/lib/seo';
 import Seo from '@/models/Seo';
 import Blog from '@/models/Blog';
 import PublicLayout from '@/components/PublicLayout';
@@ -16,6 +17,9 @@ import Testimonials from '@/components/Testimonials';
 import BlogSection from '@/components/Blog';
 import Contact from '@/components/Contact';
 
+// Re-read the DB hourly so new cities/blogs and admin SEO edits go live without a rebuild.
+export const revalidate = 3600;
+
 export async function generateMetadata() {
   try {
     await dbConnect();
@@ -26,7 +30,7 @@ export async function generateMetadata() {
         description: seo.description || 'Trusted Vastu Consultant in Zirakpur, Chandigarh. Expert in Residential, Commercial, and Industrial Vastu.',
         keywords: seo.keywords || 'Vastu Consultant, S Vastu Solution, Chandigarh, Zirakpur',
         alternates: {
-          canonical: seo.canonical || 'https://svastusolution.com',
+          canonical: canonicalUrl(seo.canonical),
         },
         robots: seo.robots || 'index, follow',
         openGraph: {
@@ -44,6 +48,7 @@ export async function generateMetadata() {
   return {
     title: 'S Vastu Solution - Expert Vastu Consultant',
     description: 'Trusted Vastu Consultant in Zirakpur, Chandigarh. Expert in Residential, Commercial, and Industrial Vastu.',
+    alternates: { canonical: 'https://svastusolution.com' },
   };
 }
 

@@ -3,7 +3,6 @@ import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { PhoneCall } from 'lucide-react';
 import Contact from '../components/Contact';
-import SeoMeta from '../components/SeoMeta';
 
 export default function ContactPage() {
   useEffect(() => {
@@ -12,7 +11,6 @@ export default function ContactPage() {
 
   return (
     <div className="pt-20 lg:pt-24 min-h-screen bg-slate-50">
-      <SeoMeta pageName="contact" />
       {/* Hero Section */}
       <section className="relative bg-[#0B152A] pt-16 pb-10 sm:pt-20 sm:pb-12 overflow-hidden">
         {/* Animated glowing blobs */}

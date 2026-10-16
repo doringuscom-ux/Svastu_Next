@@ -1,7 +1,12 @@
 import dbConnect from '@/lib/db';
+import { canonicalUrl } from '@/lib/seo';
 import Seo from '@/models/Seo';
+import Blog from '@/models/Blog';
 import PublicLayout from '@/components/PublicLayout';
 import BlogPage from '@/legacy-pages/BlogPage';
+
+// Re-read the DB hourly so new cities/blogs and admin SEO edits go live without a rebuild.
+export const revalidate = 3600;
 
 export async function generateMetadata() {
   try {
@@ -11,7 +16,7 @@ export async function generateMetadata() {
       return {
         title: seo.title || 'Blogs & Articles - S Vastu Solution',
         description: seo.description || 'Read insightful articles and tips on Vastu, Numerology, and Astrology.',
-        alternates: { canonical: seo.canonical || 'https://svastusolution.com/blog' },
+        alternates: { canonical: canonicalUrl(seo.canonical, '/blog') },
         robots: seo.robots || 'index, follow',
       };
     }
@@ -19,13 +24,23 @@ export async function generateMetadata() {
   return {
     title: 'Blogs & Articles - S Vastu Solution',
     description: 'Read insightful articles and tips on Vastu, Numerology, and Astrology.',
+    alternates: { canonical: 'https://svastusolution.com/blog' },
   };
 }
 
-export default function Page() {
+export default async function Page() {
+  let initialPosts = null;
+  try {
+    await dbConnect();
+    const blogs = await Blog.find({ isPublished: true }).select('-content').sort({ createdAt: -1 }).lean();
+    initialPosts = JSON.parse(JSON.stringify(blogs));
+  } catch (e) {
+    // client falls back to fetching
+  }
+
   return (
     <PublicLayout>
-      <BlogPage />
+      <BlogPage initialPosts={initialPosts} />
     </PublicLayout>
   );
 }

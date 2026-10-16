@@ -5,9 +5,6 @@ export const metadata = {
   title: 'S Vastu Solution - Expert Vastu Consultant',
   description: 'Trusted Vastu Consultant in Zirakpur, Chandigarh. Expert in Residential, Commercial, and Industrial Vastu.',
   metadataBase: new URL('https://svastusolution.com'),
-  alternates: {
-    canonical: 'https://svastusolution.com',
-  },
   verification: {
     google: 'ecaQh6cKsOoEBAMkPPKawhczrceYpzjalS2rUBvS8sw',
   },

@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import { Compass, Star, Eye, Shield, Target, Check, X } from 'lucide-react';
 import Founders from '../components/Founders';
 const consultationImg = '/assets/consultation.png';
-import SeoMeta from '../components/SeoMeta';
 
 export default function AboutPage() {
   useEffect(() => {
@@ -13,7 +12,6 @@ export default function AboutPage() {
 
   return (
     <div className="pt-20 lg:pt-24 min-h-screen bg-slate-50 flex flex-col">
-      <SeoMeta pageName="about" />
       {/* Hero Section */}
       <section className="relative bg-[#0B152A] pt-12 pb-12 sm:pt-16 sm:pb-16 overflow-hidden">
         {/* Animated glowing blobs */}

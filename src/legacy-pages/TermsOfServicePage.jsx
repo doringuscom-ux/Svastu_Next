@@ -1,11 +1,9 @@
 'use client';
 import React from 'react';
-import SeoMeta from '../components/SeoMeta';
 
 export default function TermsOfServicePage() {
   return (
     <>
-      <SeoMeta pageName="terms-of-service" />
       <div className="pt-24 pb-16 bg-gray-50 min-h-screen">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 bg-white p-8 md:p-12 shadow-sm rounded-lg">
           <h1 className="text-3xl md:text-4xl font-bold text-[#0A192F] mb-8 border-b pb-4">Terms of Service</h1>

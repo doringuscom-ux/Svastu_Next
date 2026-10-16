@@ -39,11 +39,10 @@ const Cityscapes = [
   )
 ];
 import { PAGES_API } from '../utils/api';
-import SeoMeta from '../components/SeoMeta';
 
-export default function LocationsPage() {
-  const [locations, setLocations] = useState([]);
-  const [loading, setLoading] = useState(true);
+export default function LocationsPage({ initialLocations = null }) {
+  const [locations, setLocations] = useState(initialLocations || []);
+  const [loading, setLoading] = useState(!initialLocations);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCountry, setSelectedCountry] = useState('All');
 
@@ -59,7 +58,7 @@ export default function LocationsPage() {
       }
     };
     
-    fetchLocations();
+    if (!initialLocations) fetchLocations();
     window.scrollTo(0, 0);
   }, []);
 
@@ -109,7 +108,6 @@ export default function LocationsPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 pb-12 pt-20 lg:pt-24">
-      <SeoMeta pageName="locations" />
       
       {/* Hero Section */}
       <section className="relative bg-[#0B152A] pt-16 pb-10 sm:pt-20 sm:pb-12 overflow-hidden text-center">

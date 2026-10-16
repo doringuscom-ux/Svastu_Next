@@ -3,7 +3,6 @@ import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Camera } from 'lucide-react';
 import Gallery from '../components/Gallery';
-import SeoMeta from '../components/SeoMeta';
 
 export default function GalleryPage() {
   useEffect(() => {
@@ -12,7 +11,6 @@ export default function GalleryPage() {
 
   return (
     <div className="pt-20 lg:pt-24 min-h-screen bg-slate-50">
-      <SeoMeta pageName="gallery" />
       {/* Hero Section */}
       <section className="relative bg-[#0B152A] pt-16 pb-10 sm:pt-20 sm:pb-12 overflow-hidden">
         {/* Animated glowing blobs */}

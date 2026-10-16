@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { Calendar, User, ChevronRight, Search, Tag, MapPin, Phone, Mail, ArrowRight } from 'lucide-react';
 import { Link, useParams } from '@/components/RouterShim';
 import axios from 'axios';
-import { Helmet } from 'react-helmet-async';
 import { BLOGS_API } from '../utils/api';
 
 export default function SingleBlogPage({ initialBlog = null, initialAllBlogs = [] }) {
@@ -75,13 +74,6 @@ export default function SingleBlogPage({ initialBlog = null, initialAllBlogs = [
 
   return (
     <div className="bg-white min-h-screen pt-0">
-      <Helmet>
-        <title>{blog.metaTitle || `${blog.title} | S-Vastu Solution`}</title>
-        <meta name="description" content={blog.metaDescription || blog.excerpt} />
-        {blog.metaKeywords && <meta name="keywords" content={blog.metaKeywords} />}
-        <link rel="canonical" href={blog.metaCanonical || (typeof window !== 'undefined' ? `${window.location.origin}${window.location.pathname}` : `https://svastusolution.com/${blog.slug}`)} />
-        {blog.metaRobots && <meta name="robots" content={blog.metaRobots} />}
-      </Helmet>
 
       {/* 1. Page Header / Banner */}
       <div className="bg-gray-900 text-white pt-36 pb-12 md:pt-48 md:pb-20 relative overflow-hidden">

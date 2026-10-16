@@ -1,5 +1,6 @@
 export const dynamic = 'force-dynamic';
 import dbConnect from '@/lib/db';
+import { canonicalUrl } from '@/lib/seo';
 import Blog from '@/models/Blog';
 import Page from '@/models/Page';
 import PublicLayout from '@/components/PublicLayout';
@@ -7,7 +8,7 @@ import { ParamsProvider } from '@/components/RouterShim';
 import SingleBlogPage from '@/legacy-pages/SingleBlogPage';
 import SingleServicePage from '@/legacy-pages/SingleServicePage';
 import CityPage from '@/legacy-pages/CityPage';
-import NotFoundPage from '@/legacy-pages/NotFoundPage';
+import { notFound } from 'next/navigation';
 
 const serviceSlugs = [
   'vastu-solution',
@@ -44,13 +45,13 @@ export async function generateMetadata({ params }) {
   try {
     await dbConnect();
     // 1. Check Blog
-    const blog = await Blog.findOne({ slug }).lean();
+    const blog = await Blog.findOne({ slug, isPublished: true }).lean();
     if (blog) {
       return {
         title: blog.metaTitle || blog.title,
         description: blog.metaDescription || blog.excerpt || '',
         keywords: blog.metaKeywords || '',
-        alternates: { canonical: blog.metaCanonical || `https://svastusolution.com/${slug}` },
+        alternates: { canonical: canonicalUrl(blog.metaCanonical, `/${slug}`) },
         robots: blog.metaRobots || 'index, follow',
         openGraph: {
           title: blog.metaTitle || blog.title,
@@ -70,7 +71,7 @@ export async function generateMetadata({ params }) {
         title: page.metaTitle || `Vastu Consultant in ${formattedCity} | S-Vastu Solution`,
         description: page.metaDescription || `Best Vastu Consultant in ${formattedCity}. Expert consultation for residential and commercial spaces.`,
         keywords: page.metaKeywords || '',
-        alternates: { canonical: page.metaCanonical || `https://svastusolution.com/${slug}` },
+        alternates: { canonical: canonicalUrl(page.metaCanonical, `/${slug}`) },
         robots: page.metaRobots || 'index, follow',
       };
     }
@@ -81,6 +82,7 @@ export async function generateMetadata({ params }) {
   return {
     title: 'S Vastu Solution - Expert Vastu Consultant',
     description: 'Expert Vastu, Numerology, and Astrology consultations.',
+    robots: 'noindex',
   };
 }
 
@@ -100,7 +102,7 @@ export default async function DynamicSlugPage({ params }) {
 
   // 2. Blog route
   await dbConnect();
-  const blog = await Blog.findOne({ slug }).lean();
+  const blog = await Blog.findOne({ slug, isPublished: true }).lean();
   if (blog) {
     // Fetch recent blogs on server for sidebar
     const recentBlogs = await Blog.find({ isPublished: true, slug: { $ne: slug } })
@@ -244,9 +246,5 @@ export default async function DynamicSlugPage({ params }) {
   }
 
   // 4. Not Found
-  return (
-    <PublicLayout>
-      <NotFoundPage />
-    </PublicLayout>
-  );
+  notFound();
 }

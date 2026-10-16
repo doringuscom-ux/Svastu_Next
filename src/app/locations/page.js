@@ -1,7 +1,12 @@
 import dbConnect from '@/lib/db';
+import { canonicalUrl } from '@/lib/seo';
 import Seo from '@/models/Seo';
+import Page from '@/models/Page';
 import PublicLayout from '@/components/PublicLayout';
 import LocationsPage from '@/legacy-pages/LocationsPage';
+
+// Re-read the DB hourly so new cities/blogs and admin SEO edits go live without a rebuild.
+export const revalidate = 3600;
 
 export async function generateMetadata() {
   try {
@@ -11,7 +16,7 @@ export async function generateMetadata() {
       return {
         title: seo.title || 'Locations We Serve - S Vastu Solution',
         description: seo.description || 'Explore our Vastu consulting locations across India and globally.',
-        alternates: { canonical: seo.canonical || 'https://svastusolution.com/locations' },
+        alternates: { canonical: canonicalUrl(seo.canonical, '/locations') },
         robots: seo.robots || 'index, follow',
       };
     }
@@ -19,13 +24,23 @@ export async function generateMetadata() {
   return {
     title: 'Locations We Serve - S Vastu Solution',
     description: 'Explore our Vastu consulting locations across India and globally.',
+    alternates: { canonical: 'https://svastusolution.com/locations' },
   };
 }
 
-export default function Page() {
+export default async function LocationsRoute() {
+  let initialLocations = null;
+  try {
+    await dbConnect();
+    const pages = await Page.find({}).sort({ createdAt: -1 }).lean();
+    initialLocations = JSON.parse(JSON.stringify(pages));
+  } catch (e) {
+    // client falls back to fetching
+  }
+
   return (
     <PublicLayout>
-      <LocationsPage />
+      <LocationsPage initialLocations={initialLocations} />
     </PublicLayout>
   );
 }
