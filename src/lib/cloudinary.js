@@ -22,4 +22,15 @@ export async function uploadBufferToCloudinary(buffer, folder = 'svastu') {
   });
 }
 
+// Uploads the file in `formData[field]` (if one was chosen) and returns its URL, else null.
+export async function uploadFormImage(formData, field, folder) {
+  const file = formData.get(field);
+  if (!file || typeof file === 'string' || file.size === 0) {
+    return null;
+  }
+  const buffer = Buffer.from(await file.arrayBuffer());
+  const result = await uploadBufferToCloudinary(buffer, folder);
+  return result.secure_url || result.url;
+}
+
 export default cloudinary;

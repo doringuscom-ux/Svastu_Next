@@ -111,7 +111,6 @@ export default function AdminGalleryPages() {
     const token = localStorage.getItem('adminToken');
     const config = {
       headers: {
-        'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${token}`
       }
     };
