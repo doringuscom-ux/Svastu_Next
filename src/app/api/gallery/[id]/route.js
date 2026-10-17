@@ -1,7 +1,7 @@
 import Gallery from '@/models/Gallery';
 import { requireAdmin } from '@/lib/auth';
 import { uploadFormImage } from '@/lib/cloudinary';
-import { revalidatePath } from 'next/cache';
+import { revalidateSite } from '@/lib/isr';
 import { NextResponse } from 'next/server';
 
 // Subadmins may only change images they uploaded themselves.
@@ -31,7 +31,7 @@ export async function PUT(request, { params }) {
     image.src = src || image.src;
 
     const updated = await image.save();
-    revalidatePath('/gallery');
+    revalidateSite();
     return NextResponse.json(updated);
   } catch (error) {
     console.error('Gallery update error:', error);
@@ -54,7 +54,7 @@ export async function DELETE(request, { params }) {
     }
 
     await image.deleteOne();
-    revalidatePath('/gallery');
+    revalidateSite();
     return NextResponse.json({ message: 'Image removed' });
   } catch (error) {
     console.error('Gallery delete error:', error);

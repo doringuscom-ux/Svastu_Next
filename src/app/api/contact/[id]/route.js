@@ -1,14 +1,15 @@
-import dbConnect from '@/lib/db';
 import Contact from '@/models/Contact';
+import { requireAdmin } from '@/lib/auth';
 import { NextResponse } from 'next/server';
 
 export async function PUT(request, { params }) {
   try {
-    await dbConnect();
+    const { response } = await requireAdmin(request);
+    if (response) return response;
     const { id } = await params;
     const body = await request.json();
 
-    const updated = await Contact.findByIdAndUpdate(id, body, { new: true });
+    const updated = await Contact.findByIdAndUpdate(id, { status: body.status }, { new: true, runValidators: true });
     if (!updated) {
       return NextResponse.json({ message: 'Contact not found' }, { status: 404 });
     }
@@ -21,7 +22,8 @@ export async function PUT(request, { params }) {
 
 export async function DELETE(request, { params }) {
   try {
-    await dbConnect();
+    const { response } = await requireAdmin(request);
+    if (response) return response;
     const { id } = await params;
 
     const deleted = await Contact.findByIdAndDelete(id);

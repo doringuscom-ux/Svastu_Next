@@ -2,6 +2,7 @@ import dbConnect from '@/lib/db';
 import Blog from '@/models/Blog';
 import Page from '@/models/Page';
 import { canonicalUrl } from '@/lib/seo';
+import { keepStaleOnError } from '@/lib/isr';
 
 // Re-read the DB hourly so new cities/blogs and admin SEO edits go live without a rebuild.
 export const revalidate = 3600;
@@ -80,7 +81,7 @@ export default async function sitemap() {
       priority: 0.9,
     }));
   } catch (error) {
-    console.error('Error generating dynamic sitemap:', error);
+    keepStaleOnError(error);
   }
 
   return [...staticRoutes, ...serviceRoutes, ...blogRoutes, ...locationRoutes];

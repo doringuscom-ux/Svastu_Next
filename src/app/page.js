@@ -16,6 +16,7 @@ import InstagramFeed from '@/components/InstagramFeed';
 import Testimonials from '@/components/Testimonials';
 import BlogSection from '@/components/Blog';
 import Contact from '@/components/Contact';
+import { keepStaleOnError } from '@/lib/isr';
 
 // Re-read the DB hourly so new cities/blogs and admin SEO edits go live without a rebuild.
 export const revalidate = 3600;
@@ -42,7 +43,7 @@ export async function generateMetadata() {
       };
     }
   } catch (e) {
-    // fallback
+    keepStaleOnError(e);
   }
 
   return {
@@ -62,7 +63,7 @@ export default async function HomePage() {
       .limit(6)
       .lean();
   } catch (e) {
-    // fallback
+    keepStaleOnError(e);
   }
 
   return (

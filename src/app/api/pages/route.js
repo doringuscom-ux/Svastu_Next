@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import { verifyAdmin } from '@/lib/auth';
 import { uploadBufferToCloudinary } from '@/lib/cloudinary';
 import { NextResponse } from 'next/server';
+import { revalidateSite } from '@/lib/isr';
 
 export async function GET(request) {
   try {
@@ -106,6 +107,7 @@ export async function POST(request) {
       syncSitemapFile().catch(console.error);
     } catch (e) {}
 
+    revalidateSite();
     return NextResponse.json(saved, { status: 201 });
   } catch (error) {
     console.error('API /pages POST error:', error);

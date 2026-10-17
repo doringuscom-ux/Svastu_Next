@@ -3,6 +3,7 @@ import Blog from '@/models/Blog';
 import { verifyAdmin } from '@/lib/auth';
 import { uploadBufferToCloudinary } from '@/lib/cloudinary';
 import { NextResponse } from 'next/server';
+import { revalidateSite } from '@/lib/isr';
 
 export const dynamic = 'force-dynamic';
 
@@ -94,6 +95,7 @@ export async function PUT(request, { params }) {
     }
 
     const updated = await blog.save();
+    revalidateSite();
     return NextResponse.json(updated);
   } catch (error) {
     console.error('Blog update error:', error);
@@ -115,6 +117,7 @@ export async function DELETE(request, { params }) {
     }
 
     await blog.deleteOne();
+    revalidateSite();
     return NextResponse.json({ message: 'Blog deleted successfully' });
   } catch (error) {
     console.error('Blog delete error:', error);

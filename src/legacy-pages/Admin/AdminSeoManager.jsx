@@ -45,7 +45,6 @@ export default function AdminSeoManager() {
     const token = localStorage.getItem('adminToken');
     return { 
       headers: { 
-        'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${token}` 
       } 
     };

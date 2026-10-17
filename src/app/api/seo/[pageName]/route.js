@@ -3,6 +3,7 @@ import Seo from '@/models/Seo';
 import { verifyAdmin } from '@/lib/auth';
 import { uploadBufferToCloudinary } from '@/lib/cloudinary';
 import { NextResponse } from 'next/server';
+import { revalidateSite } from '@/lib/isr';
 
 export async function GET(request, { params }) {
   try {
@@ -71,6 +72,7 @@ export async function PUT(request, { params }) {
       if (ogImage) seo.ogImage = ogImage;
 
       const updated = await seo.save();
+      revalidateSite();
       return NextResponse.json(updated);
     } else {
       const newSeo = new Seo({
@@ -84,6 +86,7 @@ export async function PUT(request, { params }) {
         robots: robots || 'index, follow',
       });
       const saved = await newSeo.save();
+      revalidateSite();
       return NextResponse.json(saved, { status: 201 });
     }
   } catch (error) {

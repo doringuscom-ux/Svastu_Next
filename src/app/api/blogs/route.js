@@ -3,6 +3,7 @@ import Blog from '@/models/Blog';
 import { verifyAdmin } from '@/lib/auth';
 import { uploadBufferToCloudinary } from '@/lib/cloudinary';
 import { NextResponse } from 'next/server';
+import { revalidateSite } from '@/lib/isr';
 
 export const dynamic = 'force-dynamic';
 
@@ -85,6 +86,7 @@ export async function POST(request) {
     });
 
     const saved = await blog.save();
+    revalidateSite();
     return NextResponse.json(saved, { status: 201 });
   } catch (error) {
     console.error('Blog create error:', error);

@@ -3,6 +3,7 @@ import { canonicalUrl } from '@/lib/seo';
 import Seo from '@/models/Seo';
 import PublicLayout from '@/components/PublicLayout';
 import ContactPage from '@/legacy-pages/ContactPage';
+import { keepStaleOnError } from '@/lib/isr';
 
 // Re-read the DB hourly so new cities/blogs and admin SEO edits go live without a rebuild.
 export const revalidate = 3600;
@@ -19,7 +20,9 @@ export async function generateMetadata() {
         robots: seo.robots || 'index, follow',
       };
     }
-  } catch (e) {}
+  } catch (e) {
+    keepStaleOnError(e);
+  }
   return {
     title: 'Contact Us - S Vastu Solution',
     description: 'Get in touch with S Vastu Solution for expert consultation.',

@@ -1,6 +1,10 @@
 import dbConnect from '@/lib/db';
 import Contact from '@/models/Contact';
+import { requireAdmin } from '@/lib/auth';
 import { NextResponse } from 'next/server';
+
+const escapeHtml = (value = '') =>
+  String(value).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 export async function POST(request) {
   try {
@@ -26,13 +30,13 @@ export async function POST(request) {
         const htmlMessage = `
           <h2>New Consultation Request</h2>
           <table border="1" cellpadding="8" style="border-collapse: collapse;">
-            <tr><td><strong>Name:</strong></td><td>${name}</td></tr>
-            <tr><td><strong>Email:</strong></td><td>${email}</td></tr>
-            <tr><td><strong>Phone:</strong></td><td>${phone}</td></tr>
-            <tr><td><strong>State:</strong></td><td>${state || 'N/A'}</td></tr>
-            <tr><td><strong>Problem:</strong></td><td>${problem}</td></tr>
-            <tr><td><strong>Date:</strong></td><td>${date || 'N/A'}</td></tr>
-            <tr><td><strong>Time:</strong></td><td>${time || 'N/A'}</td></tr>
+            <tr><td><strong>Name:</strong></td><td>${escapeHtml(name)}</td></tr>
+            <tr><td><strong>Email:</strong></td><td>${escapeHtml(email)}</td></tr>
+            <tr><td><strong>Phone:</strong></td><td>${escapeHtml(phone)}</td></tr>
+            <tr><td><strong>State:</strong></td><td>${escapeHtml(state || 'N/A')}</td></tr>
+            <tr><td><strong>Problem:</strong></td><td>${escapeHtml(problem)}</td></tr>
+            <tr><td><strong>Date:</strong></td><td>${escapeHtml(date || 'N/A')}</td></tr>
+            <tr><td><strong>Time:</strong></td><td>${escapeHtml(time || 'N/A')}</td></tr>
           </table>
         `;
 
@@ -60,9 +64,10 @@ export async function POST(request) {
   }
 }
 
-export async function GET() {
+export async function GET(request) {
   try {
-    await dbConnect();
+    const { response } = await requireAdmin(request);
+    if (response) return response;
     const contacts = await Contact.find({}).sort({ createdAt: -1 }).lean();
     return NextResponse.json(contacts);
   } catch (error) {

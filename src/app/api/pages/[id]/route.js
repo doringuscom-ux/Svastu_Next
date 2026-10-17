@@ -3,6 +3,7 @@ import Page from '@/models/Page';
 import { verifyAdmin } from '@/lib/auth';
 import { uploadBufferToCloudinary } from '@/lib/cloudinary';
 import { NextResponse } from 'next/server';
+import { revalidateSite } from '@/lib/isr';
 
 export async function GET(request, { params }) {
   try {
@@ -118,6 +119,7 @@ export async function PUT(request, { params }) {
     }
 
     const updatedPage = await page.save();
+    revalidateSite();
     return NextResponse.json(updatedPage);
   } catch (error) {
     console.error('API /pages/[id] PUT error:', error);
@@ -151,6 +153,7 @@ export async function DELETE(request, { params }) {
     }
 
     await page.deleteOne();
+    revalidateSite();
     return NextResponse.json({ message: 'Page removed' });
   } catch (error) {
     console.error('API /pages/[id] DELETE error:', error);

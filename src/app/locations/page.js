@@ -4,6 +4,7 @@ import Seo from '@/models/Seo';
 import Page from '@/models/Page';
 import PublicLayout from '@/components/PublicLayout';
 import LocationsPage from '@/legacy-pages/LocationsPage';
+import { keepStaleOnError } from '@/lib/isr';
 
 // Re-read the DB hourly so new cities/blogs and admin SEO edits go live without a rebuild.
 export const revalidate = 3600;
@@ -20,7 +21,9 @@ export async function generateMetadata() {
         robots: seo.robots || 'index, follow',
       };
     }
-  } catch (e) {}
+  } catch (e) {
+    keepStaleOnError(e);
+  }
   return {
     title: 'Locations We Serve - S Vastu Solution',
     description: 'Explore our Vastu consulting locations across India and globally.',
@@ -35,7 +38,7 @@ export default async function LocationsRoute() {
     const pages = await Page.find({}).sort({ createdAt: -1 }).lean();
     initialLocations = JSON.parse(JSON.stringify(pages));
   } catch (e) {
-    // client falls back to fetching
+    keepStaleOnError(e);
   }
 
   return (

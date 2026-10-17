@@ -3,6 +3,7 @@ import { canonicalUrl } from '@/lib/seo';
 import Seo from '@/models/Seo';
 import PublicLayout from '@/components/PublicLayout';
 import GalleryPage from '@/legacy-pages/GalleryPage';
+import { keepStaleOnError } from '@/lib/isr';
 
 // Re-read the DB hourly so new cities/blogs and admin SEO edits go live without a rebuild.
 export const revalidate = 3600;
@@ -19,7 +20,9 @@ export async function generateMetadata() {
         robots: seo.robots || 'index, follow',
       };
     }
-  } catch (e) {}
+  } catch (e) {
+    keepStaleOnError(e);
+  }
   return {
     title: 'Gallery - S Vastu Solution',
     description: 'Explore our gallery of vastu consultations and remedies.',

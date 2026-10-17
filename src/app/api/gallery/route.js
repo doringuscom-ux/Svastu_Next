@@ -2,7 +2,7 @@ import dbConnect from '@/lib/db';
 import Gallery from '@/models/Gallery';
 import { verifyAdmin, requireAdmin } from '@/lib/auth';
 import { uploadFormImage } from '@/lib/cloudinary';
-import { revalidatePath } from 'next/cache';
+import { revalidateSite } from '@/lib/isr';
 import { NextResponse } from 'next/server';
 
 export async function GET(request) {
@@ -38,7 +38,7 @@ export async function POST(request) {
     }
 
     const saved = await Gallery.create({ src, alt, category, size, createdBy: admin._id });
-    revalidatePath('/gallery');
+    revalidateSite();
     return NextResponse.json(saved, { status: 201 });
   } catch (error) {
     console.error('Gallery create error:', error);
