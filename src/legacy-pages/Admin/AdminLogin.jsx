@@ -43,6 +43,10 @@ const AdminLogin = () => {
     const token = localStorage.getItem('adminToken');
     if (token) {
       navigate('/admin/dashboard');
+      return;
+    }
+    if (new URLSearchParams(window.location.search).get('expired')) {
+      setError('Your session has expired. Please login again.');
     }
   }, [navigate]);
 
@@ -56,7 +60,6 @@ const AdminLogin = () => {
       if (data.role) {
         localStorage.setItem('adminRole', data.role);
       }
-      localStorage.setItem('refreshToken', data.refreshToken);
       navigate('/admin/dashboard');
     } catch (err) {
       const responseData = err.response?.data;
@@ -98,7 +101,6 @@ const AdminLogin = () => {
       if (data.role) {
         localStorage.setItem('adminRole', data.role);
       }
-      localStorage.setItem('refreshToken', data.refreshToken);
       navigate('/admin/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to verify OTP');

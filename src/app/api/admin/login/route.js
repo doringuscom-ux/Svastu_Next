@@ -1,15 +1,7 @@
 import dbConnect from '@/lib/db';
 import Admin from '@/models/Admin';
-import jwt from 'jsonwebtoken';
+import { sessionPayload } from '@/lib/auth';
 import { NextResponse } from 'next/server';
-
-const generateAccessToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
-};
-
-const generateRefreshToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '3d' });
-};
 
 export async function POST(request) {
   try {
@@ -37,14 +29,7 @@ export async function POST(request) {
       admin.failedLoginAttempts = 0;
       await admin.save();
 
-      return NextResponse.json({
-        _id: admin._id,
-        username: admin.username,
-        name: admin.name,
-        role: admin.role,
-        token: generateAccessToken(admin._id),
-        refreshToken: generateRefreshToken(admin._id),
-      });
+      return NextResponse.json(sessionPayload(admin));
     } else {
       admin.failedLoginAttempts = (admin.failedLoginAttempts || 0) + 1;
       if (admin.failedLoginAttempts >= 5) {

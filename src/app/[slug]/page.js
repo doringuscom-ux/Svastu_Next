@@ -21,16 +21,8 @@ const serviceSlugs = [
   'online-consultation'
 ];
 
-function decodeSlug(raw) {
-  try {
-    return decodeURIComponent(raw).trim();
-  } catch {
-    return raw;
-  }
-}
-
 export async function generateMetadata({ params }) {
-  const slug = decodeSlug((await params).slug);
+  const { slug } = await params;
 
   if (serviceSlugs.includes(slug)) {
     const titles = {
@@ -95,7 +87,7 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function DynamicSlugPage({ params }) {
-  const slug = decodeSlug((await params).slug);
+  const { slug } = await params;
 
   // 1. Service route
   if (serviceSlugs.includes(slug)) {

@@ -13,19 +13,14 @@ if (!cached) {
 }
 
 async function dbConnect() {
-  // readyState 1 = connected. A dropped/idle connection must be re-established,
-  // otherwise every query fails until the server restarts.
-  if (cached.conn && mongoose.connection.readyState === 1) {
+  if (cached.conn) {
     return cached.conn;
-  }
-  if (cached.conn && mongoose.connection.readyState !== 2) {
-    cached.conn = null;
-    cached.promise = null;
   }
 
   if (!cached.promise) {
+    // Command buffering stays on (mongoose default): if the driver is reconnecting after a
+    // network blip, queries wait for it instead of failing straight away.
     const opts = {
-      bufferCommands: false,
       serverSelectionTimeoutMS: 10000,
       maxPoolSize: 10,
     };

@@ -20,6 +20,11 @@ export async function GET(request, { params }) {
       blog = await Blog.findOne({ slug: idOrSlug }).lean();
     }
 
+    // Unpublished drafts are only visible to a logged-in admin.
+    if (blog && !blog.isPublished && !(await verifyAdmin(request))) {
+      blog = null;
+    }
+
     if (!blog) {
       return NextResponse.json({ message: 'Blog not found' }, { status: 404 });
     }

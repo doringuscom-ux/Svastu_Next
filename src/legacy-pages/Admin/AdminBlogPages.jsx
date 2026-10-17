@@ -67,8 +67,20 @@ export default function AdminBlogPages() {
     fetchBlogs();
   }, []);
 
-  const handleOpenModal = (blog = null) => {
-    if (blog) {
+  const handleOpenModal = async (listBlog = null) => {
+    if (listBlog) {
+      // The list endpoint omits `content` to stay light, so load the full post before editing.
+      let blog = listBlog;
+      try {
+        setLoading(true);
+        const { data } = await axios.get(`${API_URL}/${listBlog._id}`, getAuthHeaders());
+        blog = data;
+      } catch (err) {
+        setError('Failed to load blog content. Please try again.');
+        return;
+      } finally {
+        setLoading(false);
+      }
       setEditingBlog(blog);
       setFormData({
         title: blog.title || '',

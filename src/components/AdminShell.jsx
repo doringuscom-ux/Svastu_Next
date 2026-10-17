@@ -3,6 +3,16 @@ import React, { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { LayoutDashboard, FileText, LogOut, Home, Users, Image as ImageIcon, Mail, Settings } from 'lucide-react';
 import Link from 'next/link';
+import axios from 'axios';
+import { ADMIN_API } from '../utils/api';
+
+const SESSION_REFRESH_MS = 60 * 60 * 1000;
+
+const clearSession = () => {
+  localStorage.removeItem('adminToken');
+  localStorage.removeItem('refreshToken');
+  localStorage.removeItem('adminRole');
+};
 
 export default function AdminLayout({ children }) {
   const [authorized, setAuthorized] = useState(false);
@@ -14,16 +24,56 @@ export default function AdminLayout({ children }) {
     const token = localStorage.getItem('adminToken');
     if (!token) {
       router.push('/admin/login');
-    } else {
-      setAuthorized(true);
-      setRole(localStorage.getItem('adminRole') || '');
+      return;
     }
+    setAuthorized(true);
+    setRole(localStorage.getItem('adminRole') || '');
+
+    const expireSession = () => {
+      clearSession();
+      router.push('/admin/login?expired=1');
+    };
+
+    // Any 401 from our API means the token is no longer valid: send the admin to login
+    // instead of leaving them on a page where every action silently fails.
+    const interceptor = axios.interceptors.response.use(
+      (res) => res,
+      (error) => {
+        const url = error.config?.url || '';
+        if (error.response?.status === 401 && url.startsWith('/api/') && !url.startsWith(`${ADMIN_API}/login`)) {
+          expireSession();
+        }
+        return Promise.reject(error);
+      }
+    );
+
+    // Sliding session: swap the token for a fresh one now and every hour while the panel is open.
+    // Only a 401 logs out; a network/server error keeps the current session.
+    const refreshSession = async () => {
+      try {
+        const { data } = await axios.get(`${ADMIN_API}/me`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('adminToken')}` },
+        });
+        localStorage.setItem('adminToken', data.token);
+        if (data.role) {
+          localStorage.setItem('adminRole', data.role);
+          setRole(data.role);
+        }
+      } catch (err) {
+        // 401 is handled by the interceptor above
+      }
+    };
+    refreshSession();
+    const timer = setInterval(refreshSession, SESSION_REFRESH_MS);
+
+    return () => {
+      axios.interceptors.response.eject(interceptor);
+      clearInterval(timer);
+    };
   }, [router]);
 
   const handleLogout = () => {
-    localStorage.removeItem('adminToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('adminRole');
+    clearSession();
     router.push('/admin/login');
   };
 

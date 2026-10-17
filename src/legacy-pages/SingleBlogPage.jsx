@@ -13,7 +13,7 @@ export default function SingleBlogPage({ initialBlog = null, initialAllBlogs = [
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (initialBlog && initialBlog.content && (initialBlog.slug === slug || !slug)) {
+    if (initialBlog && (initialBlog.slug === slug || !slug)) {
       setBlog(initialBlog);
       if (initialAllBlogs && initialAllBlogs.length > 0) {
         setAllBlogs(initialAllBlogs);

@@ -1,7 +1,5 @@
 import dbConnect from '@/lib/db';
 import Blog from '@/models/Blog';
-import Admin from '@/models/Admin';
-import jwt from 'jsonwebtoken';
 import { verifyAdmin } from '@/lib/auth';
 import { uploadBufferToCloudinary } from '@/lib/cloudinary';
 import { NextResponse } from 'next/server';
@@ -14,20 +12,15 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const all = searchParams.get('all');
 
-    let filter = all === 'true' ? {} : { isPublished: true };
+    let filter = { isPublished: true };
 
-    const authHeader = request.headers.get('authorization');
-    if (all === 'true' && authHeader && authHeader.startsWith('Bearer ')) {
-      const token = authHeader.split(' ')[1];
-      try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const adminUser = await Admin.findById(decoded.id);
-        if (adminUser && adminUser.role === 'subadmin') {
-          filter.createdBy = adminUser._id;
-        }
-      } catch (err) {
-        // ignore
+    // Drafts (all=true) are only listed for a logged-in admin; subadmins see their own posts.
+    if (all === 'true') {
+      const adminUser = await verifyAdmin(request);
+      if (!adminUser) {
+        return NextResponse.json({ message: 'Not authorized' }, { status: 401 });
       }
+      filter = adminUser.role === 'subadmin' ? { createdBy: adminUser._id } : {};
     }
 
     const blogs = await Blog.find(filter)
