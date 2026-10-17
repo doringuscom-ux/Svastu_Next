@@ -12,16 +12,17 @@ const cleanExcerpt = (post) => {
 };
 
 export default function Blog({ hideHeader = false, limit, showFilters = false, initialPosts = null }) {
-  const [posts, setPosts] = useState(initialPosts || []);
-  const [loading, setLoading] = useState(!initialPosts);
+  const hasInitial = Array.isArray(initialPosts) && initialPosts.length > 0;
+  const [posts, setPosts] = useState(hasInitial ? initialPosts : []);
+  const [loading, setLoading] = useState(!hasInitial);
   const [activeCategory, setActiveCategory] = useState('All');
 
   useEffect(() => {
-    if (initialPosts) return;
+    if (hasInitial) return;
     const fetchBlogs = async () => {
       try {
-        const { data } = await axios.get(BLOGS_API);
-        setPosts(data);
+        const { data } = await axios.get(BLOGS_API, { params: { _t: Date.now() } });
+        setPosts(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error('Error fetching blogs:', error);
       } finally {
@@ -29,7 +30,7 @@ export default function Blog({ hideHeader = false, limit, showFilters = false, i
       }
     };
     fetchBlogs();
-  }, [initialPosts]);
+  }, [hasInitial]);
 
   const categories = ['All', ...new Set(posts.map(post => post.category || 'General'))];
 

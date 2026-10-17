@@ -5,8 +5,9 @@ import Blog from '@/models/Blog';
 import PublicLayout from '@/components/PublicLayout';
 import BlogPage from '@/legacy-pages/BlogPage';
 
-// Re-read the DB hourly so new cities/blogs and admin SEO edits go live without a rebuild.
-export const revalidate = 3600;
+// Render per request: an hourly cache could freeze an empty list (DB hiccup at build/revalidate)
+// and hide newly published blogs.
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata() {
   try {
@@ -33,7 +34,8 @@ export default async function Page() {
   try {
     await dbConnect();
     const blogs = await Blog.find({ isPublished: true }).select('-content').sort({ createdAt: -1 }).lean();
-    initialPosts = JSON.parse(JSON.stringify(blogs));
+    // An empty result is passed as null so the client retries via the API.
+    initialPosts = blogs.length > 0 ? JSON.parse(JSON.stringify(blogs)) : null;
   } catch (e) {
     // client falls back to fetching
   }

@@ -13,13 +13,21 @@ if (!cached) {
 }
 
 async function dbConnect() {
-  if (cached.conn) {
+  // readyState 1 = connected. A dropped/idle connection must be re-established,
+  // otherwise every query fails until the server restarts.
+  if (cached.conn && mongoose.connection.readyState === 1) {
     return cached.conn;
+  }
+  if (cached.conn && mongoose.connection.readyState !== 2) {
+    cached.conn = null;
+    cached.promise = null;
   }
 
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
+      serverSelectionTimeoutMS: 10000,
+      maxPoolSize: 10,
     };
 
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongooseInstance) => {

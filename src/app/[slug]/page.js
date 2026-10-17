@@ -21,8 +21,16 @@ const serviceSlugs = [
   'online-consultation'
 ];
 
+function decodeSlug(raw) {
+  try {
+    return decodeURIComponent(raw).trim();
+  } catch {
+    return raw;
+  }
+}
+
 export async function generateMetadata({ params }) {
-  const { slug } = await params;
+  const slug = decodeSlug((await params).slug);
 
   if (serviceSlugs.includes(slug)) {
     const titles = {
@@ -87,7 +95,7 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function DynamicSlugPage({ params }) {
-  const { slug } = await params;
+  const slug = decodeSlug((await params).slug);
 
   // 1. Service route
   if (serviceSlugs.includes(slug)) {
@@ -106,6 +114,7 @@ export default async function DynamicSlugPage({ params }) {
   if (blog) {
     // Fetch recent blogs on server for sidebar
     const recentBlogs = await Blog.find({ isPublished: true, slug: { $ne: slug } })
+      .select('-content')
       .sort({ createdAt: -1 })
       .limit(6)
       .lean();

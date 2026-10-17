@@ -13,7 +13,7 @@ export default function SingleBlogPage({ initialBlog = null, initialAllBlogs = [
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (initialBlog && (initialBlog.slug === slug || !slug)) {
+    if (initialBlog && initialBlog.content && (initialBlog.slug === slug || !slug)) {
       setBlog(initialBlog);
       if (initialAllBlogs && initialAllBlogs.length > 0) {
         setAllBlogs(initialAllBlogs);
@@ -26,7 +26,7 @@ export default function SingleBlogPage({ initialBlog = null, initialAllBlogs = [
       try {
         setLoading(true);
         const [singleRes, listRes] = await Promise.all([
-          axios.get(`${BLOGS_API}/${slug}`),
+          axios.get(`${BLOGS_API}/${encodeURIComponent(slug || initialBlog?.slug || '')}`),
           axios.get(BLOGS_API)
         ]);
         setBlog(singleRes.data);
