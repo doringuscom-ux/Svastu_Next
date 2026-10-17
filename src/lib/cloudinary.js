@@ -13,7 +13,7 @@ export async function uploadBufferToCloudinary(buffer, folder = 'svastu') {
       (error, result) => {
         if (error) {
           console.error('Cloudinary upload stream error:', error);
-          return resolve(null);
+          return reject(new Error(`Image upload failed: ${error.message || 'Cloudinary error'}`));
         }
         resolve(result);
       }

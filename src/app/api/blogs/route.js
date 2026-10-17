@@ -57,7 +57,7 @@ export async function POST(request) {
     const metaRobots = formData.get('metaRobots') || 'index, follow';
 
     let coverImage = '';
-    const imageFile = formData.get('coverImage');
+    const imageFile = formData.get('coverImageFile') || formData.get('coverImage');
     if (imageFile && typeof imageFile !== 'string' && imageFile.size > 0) {
       const bytes = await imageFile.arrayBuffer();
       const buffer = Buffer.from(bytes);

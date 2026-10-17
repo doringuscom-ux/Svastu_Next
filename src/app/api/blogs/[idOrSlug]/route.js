@@ -82,7 +82,7 @@ export async function PUT(request, { params }) {
       blog.metaCanonical = formData.get('metaCanonical') !== null ? formData.get('metaCanonical') : blog.metaCanonical;
       blog.metaRobots = formData.get('metaRobots') !== null ? formData.get('metaRobots') : blog.metaRobots;
 
-      const imageFile = formData.get('coverImage');
+      const imageFile = formData.get('coverImageFile') || formData.get('coverImage');
       if (imageFile && typeof imageFile !== 'string' && imageFile.size > 0) {
         const bytes = await imageFile.arrayBuffer();
         const buffer = Buffer.from(bytes);
